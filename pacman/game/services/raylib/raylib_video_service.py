@@ -48,7 +48,7 @@ class RaylibVideoService(VideoService):
         else:
             pyray.draw_rectangle_lines(x, y, width, height, raylib_color)
 
-    def draw_text(self, text, position):
+    def draw_text(self, text, position, color=Color(255, 255, 255)):
         filepath = text.get_fontfile()
         # fixed os dependent filepath
         filepath = str(pathlib.Path(filepath))
@@ -56,7 +56,7 @@ class RaylibVideoService(VideoService):
         size = text.get_size()
         spacing = 0
         alignment = text.get_alignment()
-        tint = self._to_raylib_color(Color(255, 255, 255))
+        tint = self._to_raylib_color(color)
 
         font = self._fonts[filepath]
         text_image = pyray.image_text_ex(font, value, size, spacing, tint)

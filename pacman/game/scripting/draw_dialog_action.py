@@ -13,4 +13,4 @@ class DrawDialogAction(Action):
         for dialog in dialogs:
             text = dialog.get_text()
             position = dialog.get_position()
-            self._video_service.draw_text(text, position)
+            self._video_service.draw_text(text, position,RED)

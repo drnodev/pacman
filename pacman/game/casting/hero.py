@@ -1,7 +1,7 @@
-import random
 from constants import *
 from game.casting.actor import Actor
 from game.casting.point import Point
+from game.casting.animation import Animation
 
 
 class Hero(Actor):
@@ -43,4 +43,36 @@ class Hero(Actor):
             An instance of Image.
         """
         return self._image
+    
+    def swing_left(self):
+        """Steers the bat to the left."""
+        velocity = Point(-HERO_VELOCITY, 0)
+        self._body.set_velocity(velocity)
+        #Change animation
+        self._update_animation(LEFT)
+        
+    def swing_right(self):
+        """Steers the bat to the right."""
+        velocity = Point(HERO_VELOCITY, 0)
+        self._body.set_velocity(velocity)
+        self._update_animation(RIGHT)
+
+    def swing_down(self):
+        """Steers the bat to the right."""
+        velocity = Point(0, HERO_VELOCITY)
+        self._body.set_velocity(velocity)
+        self._update_animation(DOWN)
+
+    def swing_up(self):
+        """Steers the bat to the right."""
+        velocity = Point(0, -HERO_VELOCITY)
+        self._body.set_velocity(velocity)
+        self._update_animation(UP)
+
+
+    def _update_animation(self,direction):
+        
+           self._animation = Animation(
+             [HERO_IMAGES.get(direction),HERO_IMAGE_O]
+           )
         

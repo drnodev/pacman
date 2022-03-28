@@ -10,6 +10,7 @@ class RaylibAudioService(AudioService):
     def __init__(self):
         self._sounds = {}
         self._is_playing = False
+        self._is_stoped = False
         self._music_stream = pyray.Music()
         
     def initialize(self):
@@ -28,7 +29,7 @@ class RaylibAudioService(AudioService):
         volume = sound.get_volume()
         sound = self._sounds[filepath]
         # pyray.set_sound_volume(volume)
-        pyray.play_sound_multi(sound)
+        pyray.play_sound(sound)
         
 
     def release(self):
@@ -40,16 +41,22 @@ class RaylibAudioService(AudioService):
             self._music_stream = pyray.load_music_stream(sound)
             self._music_stream.looping = True
 
-    def stop_music(self,sound):
+    def stop_music(self):
         pyray.stop_music_stream(self._music_stream)
+        self._is_stoped = True
 
     def play_music(self):
-        self._is_playing = pyray.is_music_stream_playing(self._music_stream)
-        if not self._is_playing:
-            pyray.play_music_stream(self._music_stream)
-        else :
-            pyray.update_music_stream(self._music_stream)
-            pyray.resume_music_stream(self._music_stream)
+
+        if not self._is_stoped:
+            self._is_playing = pyray.is_music_stream_playing(self._music_stream)
+            if not self._is_playing:
+                pyray.play_music_stream(self._music_stream)
+            else :
+                pyray.update_music_stream(self._music_stream)
+                pyray.resume_music_stream(self._music_stream)
+
+    def resume_music(self):
+        self._is_stoped = False
 
     def unload_sounds(self):
         for sound in self._sounds.values():

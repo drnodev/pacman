@@ -24,7 +24,9 @@ class PlayBackGroundSound(PlaySoundAction):
 
     def execute(self, cast, script, callback):
             self._audio_service.load_music(self._filename)
+            self._audio_service.resume_music()
             self._audio_service.play_music()
+            
 
         
 

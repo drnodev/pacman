@@ -12,7 +12,7 @@ FRAME_RATE = 60
 SCREEN_WIDTH = 1040
 SCREEN_HEIGHT = 680
 CENTER_X = SCREEN_WIDTH / 2
-CENTER_Y = SCREEN_HEIGHT / 2
+CENTER_Y = (SCREEN_HEIGHT / 2) - 100 
 
 # FIELD
 FIELD_TOP = 60
@@ -39,10 +39,13 @@ ALIGN_RIGHT = 2
 BLACK = Color(0, 0, 0)
 WHITE = Color(255, 255, 255)
 PURPLE = Color(255, 0, 255)
+RED  = Color(255,0,0)
 
 # KEYS
 LEFT = "left"
 RIGHT = "right"
+UP = "up"
+DOWN = "down"
 SPACE = "space"
 ENTER = "enter"
 PAUSE = "p"
@@ -93,7 +96,7 @@ SCORE_FORMAT = "SCORE: {}"
 # DIALOG
 DIALOG_GROUP = "dialogs"
 ENTER_TO_START = "READY!"
-PREP_TO_LAUNCH = "PREPARING TO LAUNCH"
+PREP_TO_LAUNCH = "READY!"
 WAS_GOOD_GAME = "GAME OVER"
 
 
@@ -107,10 +110,10 @@ HERO_IMAGE_D = "pacman/assets/images/hero_d.png"
 HERO_IMAGE_O = "pacman/assets/images/hero_0.png"
 
 HERO_IMAGES = {
-    "u": HERO_IMAGE_U,
-    "r": HERO_IMAGE_R,
-    "l": HERO_IMAGE_L,
-    "d": HERO_IMAGE_D,
+    "up": HERO_IMAGE_U,
+    "right": HERO_IMAGE_R,
+    "left": HERO_IMAGE_L,
+    "down": HERO_IMAGE_D,
     "o": HERO_IMAGE_O
 }
 
@@ -121,6 +124,9 @@ HERO_WIDTH = 28
 HERO_HEIGHT = 28
 HERO_VELOCITY = 6
 
+HERO_INIT_X = CENTER_X - HERO_WIDTH / 2
+HERO_INIT_Y = SCREEN_HEIGHT  -  200  
+
 
 #GHOST
 
@@ -128,4 +134,12 @@ GHOST_GROUP = "ghost"
 GHOST_RED = "pacman/assets/images/ghost_red.png"
 GHOST_BLUE =  "pacman/assets/images/ghost_blue.png"
 GHOST_ORANGE = "pacman/assets/images/ghost_orange.png"
+GHOST_PINK = "pacman/assets/images/ghost_pink.png"
+
+
+
+
+GHOST_WIDTH = 31
+GHOST_HEIGHT = 31
+
 

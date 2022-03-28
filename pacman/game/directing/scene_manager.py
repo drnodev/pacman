@@ -24,6 +24,10 @@ from game.casting.body import Body
 from game.scripting.draw_hero_action import DrawHeroAction
 from game.casting.animation import Animation
 from game.scripting.draw_ghost_action import DrawGhostAction
+from game.scripting.control_hero_action import ControlHeroAction
+from game.scripting.move_hero_action import MoveHeroAction
+from game.scripting.colide_ghost_action import ColideGhostAction
+from game.services.raylib.raylib_physics_service import RaylibPhysicsService
 
 
 
@@ -32,6 +36,8 @@ class SceneManager:
 
     VIDEO_SERVICE = RaylibVideoService(GAME_NAME, SCREEN_WIDTH, SCREEN_HEIGHT)
     AUDIO_SERVICE = RaylibAudioService()
+    PHYSICS_SERVICE = RaylibPhysicsService()
+
     MUSIC         = PlayBackGroundSound(AUDIO_SERVICE, LOOP_SOUND)
     KEYBOARD_SERVICE = RaylibKeyboardService()
 
@@ -41,6 +47,9 @@ class SceneManager:
     DRAW_HUD_ACTION = DrawHudAction(VIDEO_SERVICE)
     DRAW_HERO_ACTION = DrawHeroAction(VIDEO_SERVICE)
     DRAW_GHOST_ACTION = DrawGhostAction(VIDEO_SERVICE)
+    CONTROL_HERO_ACTION = ControlHeroAction(KEYBOARD_SERVICE)
+    MOVE_HERO_ACTION    = MoveHeroAction()
+    COLIDE_GHOST_ACTION = ColideGhostAction(PHYSICS_SERVICE,AUDIO_SERVICE)
 
     INITIALIZE_DEVICES_ACTION = InitializeDevicesAction(AUDIO_SERVICE, VIDEO_SERVICE)
     LOAD_ASSETS_ACTION = LoadAssetsAction(AUDIO_SERVICE, VIDEO_SERVICE)
@@ -61,13 +70,13 @@ class SceneManager:
         #    self._prepare_next_level(cast, script)
         elif scene == IN_PLAY:
             self._prepare_in_play(cast, script)
-        '''  
-          elif scene == TRY_AGAIN:
-            self._prepare_try_again(cast, script)  
+        elif scene == TRY_AGAIN:
+            self._prepare_try_again(cast, script) 
+       
         elif scene == GAME_OVER:    
             self._prepare_game_over(cast, script)
 
-            '''
+        
     def _prepare_new_game(self, cast, script):
         
         self._add_stats(cast)
@@ -75,34 +84,52 @@ class SceneManager:
         self._add_lives(cast)
         self._add_score(cast)
         self._add_hero(cast)
+
         self._add_ghost(cast)
         self._add_dialog(cast, ENTER_TO_START)
-
+        
         self._add_initialize_script(script)
         self._add_load_script(script)
         script.clear_actions(INPUT)
         script.add_action(INPUT, TimedChangeSceneAction(IN_PLAY, 4))
         #script.add_action(INPUT, ChangeSceneAction(self.KEYBOARD_SERVICE, NEXT_LEVEL))
-
-
         
         self._add_output_script(script)
         self._add_unload_script(script)
         self._add_release_script(script)
-
         script.add_action(OUTPUT,PlaySoundAction(self.AUDIO_SERVICE, INTRO_SOUND))
+
+
+    def _prepare_try_again(self, cast, script):
+        self._add_hero(cast)
+        self._add_ghost(cast)
+        self._add_dialog(cast, PREP_TO_LAUNCH)
+
+        script.clear_actions(INPUT)
+        script.add_action(INPUT, TimedChangeSceneAction(IN_PLAY, 2))
+        self._add_update_script(script)
+        self._add_output_script(script)
+
+        
+    def _prepare_game_over(self, cast, script):
+        self._add_ghost(cast)
+        self._add_hero(cast)
+        self._add_dialog(cast, WAS_GOOD_GAME)
+
+        script.clear_actions(INPUT)
+        #script.add_action(INPUT, TimedChangeSceneAction(NEW_GAME, 5))
+        script.clear_actions(UPDATE)
+        self._add_output_script(script)
 
     def _prepare_in_play(self,cast,script):
 
         cast.clear_actors(DIALOG_GROUP)
 
+        script.clear_actions(INPUT)
+        script.add_action(INPUT, self.CONTROL_HERO_ACTION)
 
-        self._add_initialize_script(script)
-        self._add_load_script(script)
-
+        self._add_update_script(script)
         self._add_output_script(script)
-        self._add_unload_script(script)
-        self._add_release_script(script)
         
 
         script.add_action(OUTPUT,self.MUSIC)
@@ -120,9 +147,7 @@ class SceneManager:
 
     def _add_hero(self, cast):
         cast.clear_actors(HERO_GROUP)
-        x = CENTER_X - HERO_WIDTH / 2
-        y = SCREEN_HEIGHT  -  200  
-        position = Point(x, y)
+        position = Point(HERO_INIT_X, HERO_INIT_Y)
         size = Point(HERO_WIDTH, HERO_HEIGHT)
         velocity = Point(0, 0)
         body = Body(position, size, velocity)
@@ -170,27 +195,27 @@ class SceneManager:
 
     def _add_ghost(self,cast):
         cast.clear_actors(GHOST_GROUP)
-        x = (CENTER_X - HERO_WIDTH / 2) + 60
-        y = (SCREEN_HEIGHT / 2 ) - 50  
+        x = (CENTER_X - HERO_WIDTH / 2) 
+        y = (SCREEN_HEIGHT / 2 )   
         position = Point(x, y)
-        size = Point(HERO_WIDTH, HERO_HEIGHT)
+        size = Point(GHOST_WIDTH, GHOST_HEIGHT)
         velocity = Point(0, 0)
         body = Body(position, size, velocity)
         image = Image(GHOST_RED)
 
-        #Animation, open/close
+
+
+
+        #Animation, 
         animation = Animation([
             GHOST_RED,
             GHOST_RED
         ], HERO_RATE, HERO_DELAY)
 
         heror = Hero(body, animation, image, True)
-        
-        x = (CENTER_X - HERO_WIDTH / 2) - 15
-        y = (SCREEN_HEIGHT / 2 ) - 50  
+        x = (CENTER_X - HERO_WIDTH / 2) - GHOST_WIDTH
+      
         position = Point(x, y)
-        size = Point(HERO_WIDTH, HERO_HEIGHT)
-        velocity = Point(0, 0)
         body = Body(position, size, velocity)
 
         image = Image(GHOST_BLUE)
@@ -198,13 +223,11 @@ class SceneManager:
             GHOST_BLUE,
             GHOST_BLUE
         ], HERO_RATE, HERO_DELAY)
+
         herob = Hero(body, animation, image, True)
 
-        x = (CENTER_X - HERO_WIDTH / 2) - 62
-        y = (SCREEN_HEIGHT / 2 ) - 50  
+        x = (CENTER_X - HERO_WIDTH / 2) +  GHOST_WIDTH
         position = Point(x, y)
-        size = Point(HERO_WIDTH, HERO_HEIGHT)
-        velocity = Point(0, 0)
         body = Body(position, size, velocity)
 
         image = Image(GHOST_ORANGE)
@@ -214,10 +237,25 @@ class SceneManager:
         ], HERO_RATE, HERO_DELAY)
         heroo = Hero(body, animation, image, True)
 
+
+        x = (CENTER_X - HERO_WIDTH / 2) 
+        y = (SCREEN_HEIGHT / 2 ) - GHOST_HEIGHT
+        position = Point(x, y)
+        body = Body(position, size, velocity)
+
+        image = Image(GHOST_PINK)
+        animation = Animation([
+            GHOST_PINK,
+            GHOST_PINK
+        ], HERO_RATE, HERO_DELAY)
+        herop = Hero(body, animation, image, True)
+
+        
+
         cast.add_actor(GHOST_GROUP, heror)      
         cast.add_actor(GHOST_GROUP, herob)      
         cast.add_actor(GHOST_GROUP, heroo) 
-
+        cast.add_actor(GHOST_GROUP, herop) 
     # ----------------------------------------------------------------------------------------------
     # scripting methods
     # ----------------------------------------------------------------------------------------------
@@ -238,13 +276,18 @@ class SceneManager:
         script.clear_actions(OUTPUT)
         script.add_action(OUTPUT, self.START_DRAWING_ACTION)
         script.add_action(OUTPUT, self.DRAW_HUD_ACTION)
-        script.add_action(OUTPUT, self.DRAW_DIALOG_ACTION)
         script.add_action(OUTPUT, self.DRAW_HERO_ACTION)
         script.add_action(OUTPUT, self.DRAW_GHOST_ACTION)
+        script.add_action(OUTPUT, self.DRAW_DIALOG_ACTION)
+       
         script.add_action(OUTPUT, self.END_DRAWING_ACTION)
         
         
-
+    def _add_update_script(self, script):
+        script.clear_actions(UPDATE)
+        
+        script.add_action(UPDATE, self.MOVE_HERO_ACTION)
+        script.add_action(UPDATE, self.COLIDE_GHOST_ACTION)
 
 
 
