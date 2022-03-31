@@ -1,6 +1,6 @@
-# -------------------------------------------------------------------------------------------------- 
+# --------------------------------------------------------------------------------------------------
 # GENERAL GAME CONSTANTS
-# -------------------------------------------------------------------------------------------------- 
+# --------------------------------------------------------------------------------------------------
 
 from game.casting.color import Color
 
@@ -9,10 +9,10 @@ GAME_NAME = "Pac-man"
 FRAME_RATE = 60
 
 # SCREEN
-SCREEN_WIDTH = 1040
+SCREEN_WIDTH = 980
 SCREEN_HEIGHT = 680
 CENTER_X = SCREEN_WIDTH / 2
-CENTER_Y = (SCREEN_HEIGHT / 2) - 100 
+CENTER_Y = (SCREEN_HEIGHT / 2) - 100
 
 # FIELD
 FIELD_TOP = 60
@@ -39,7 +39,7 @@ ALIGN_RIGHT = 2
 BLACK = Color(0, 0, 0)
 WHITE = Color(255, 255, 255)
 PURPLE = Color(255, 0, 255)
-RED  = Color(255,0,0)
+RED = Color(255, 0, 0)
 
 # KEYS
 LEFT = "left"
@@ -59,9 +59,9 @@ IN_PLAY = 3
 GAME_OVER = 4
 
 
-# -------------------------------------------------------------------------------------------------- 
+# --------------------------------------------------------------------------------------------------
 # SCRIPTING CONSTANTS
-# -------------------------------------------------------------------------------------------------- 
+# --------------------------------------------------------------------------------------------------
 
 # PHASES
 INITIALIZE = 0
@@ -72,14 +72,22 @@ OUTPUT = 4
 UNLOAD = 5
 RELEASE = 6
 
-# -------------------------------------------------------------------------------------------------- 
+# --------------------------------------------------------------------------------------------------
 # CASTING CONSTANTS
-# -------------------------------------------------------------------------------------------------- 
+# --------------------------------------------------------------------------------------------------
 
 # STATS
 STATS_GROUP = "stats"
 DEFAULT_LIVES = 3
 MAXIMUM_LIVES = 5
+
+
+# BOARD
+BOARD_GROUP = "Board"
+BOARD_FILE = "pacman/assets/data/board.txt"
+BOARD_IMG_PATH = "pacman/assets/images/"
+BRICK_WIDTH = 31
+BRICK_HEIGHT = 31
 
 
 # HUD
@@ -92,7 +100,6 @@ LIVES_FORMAT = "LIVES: {}"
 SCORE_FORMAT = "SCORE: {}"
 
 
-
 # DIALOG
 DIALOG_GROUP = "dialogs"
 ENTER_TO_START = "READY!"
@@ -100,7 +107,7 @@ PREP_TO_LAUNCH = "READY!"
 WAS_GOOD_GAME = "GAME OVER"
 
 
-#HERO
+# HERO
 
 HERO_GROUP = "hero"
 HERO_IMAGE_U = "pacman/assets/images/hero_u.png"
@@ -125,21 +132,17 @@ HERO_HEIGHT = 28
 HERO_VELOCITY = 6
 
 HERO_INIT_X = CENTER_X - HERO_WIDTH / 2
-HERO_INIT_Y = SCREEN_HEIGHT  -  200  
+HERO_INIT_Y = SCREEN_HEIGHT - 277
 
 
-#GHOST
+# GHOST
 
 GHOST_GROUP = "ghost"
 GHOST_RED = "pacman/assets/images/ghost_red.png"
-GHOST_BLUE =  "pacman/assets/images/ghost_blue.png"
+GHOST_BLUE = "pacman/assets/images/ghost_blue.png"
 GHOST_ORANGE = "pacman/assets/images/ghost_orange.png"
 GHOST_PINK = "pacman/assets/images/ghost_pink.png"
-
-
-
-
 GHOST_WIDTH = 31
 GHOST_HEIGHT = 31
-
-
+GHOST_INIT_Y = SCREEN_HEIGHT - 385
+GHOST_INIT_X = CENTER_X - GHOST_WIDTH / 2

@@ -1,12 +1,13 @@
 from game.casting.actor import Actor
+from game.casting.image import Image
 
 
 class Brick(Actor):
     """A solid, rectangular object that can be broken."""
 
-    def __init__(self, body, animation, points, debug = False):
+    def __init__(self, body, image, debug=False):
         """Constructs a new Brick.
-        
+
         Args:
             body: A new instance of Body.
             image: A new instance of Image.
@@ -14,29 +15,18 @@ class Brick(Actor):
         """
         super().__init__(debug)
         self._body = body
-        self._animation = animation
-        self._points = points
-        
-    def get_animation(self):
-        """Gets the brick's image.
-        
-        Returns:
-            An instance of Image.
-        """
-        return self._animation
+        self._image = self._load_image(image)
 
     def get_body(self):
         """Gets the brick's body.
-        
+
         Returns:
             An instance of Body.
         """
         return self._body
 
-    def get_points(self):
-        """Gets the brick's points.
-        
-        Returns:
-            A number representing the brick's points.
-        """
-        return self._points
+    def get_image(self):
+        return self._image
+
+    def _load_image(self, image):
+        return Image(image)
